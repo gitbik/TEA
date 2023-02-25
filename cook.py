@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from decimal import *
+import openpyxl
 
 def decimal_from_value(value):
     return Decimal(value)
@@ -18,6 +19,7 @@ st.markdown(hide_dataframe_row_index, unsafe_allow_html=True)
 ### Inject CSS with Markdown
 
 state_name = pd.read_csv("states.csv")
+el_price = pd.read_excel("el_price_rev.xlsx")
 
 #Household Profile
 with st.sidebar:
@@ -44,6 +46,7 @@ with st.expander('1\) Select Baseline Cooking Scenario'):
 	bpf_select = st.selectbox('Primary Cooking Fuel',(df_base_cf1))
 	mask_bf_stv = df_base_cf['Fuel'].isin([bpf_select])
 	df_base_cf_st = df_base_cf2[mask_bf_stv].iloc[:,2]
+
 	prst_select = st.selectbox('Primary Cookstove', (df_base_cf_st))
 	prst_stack_percent = st.slider('% of cooking done with the primary cookstove',min_value = 50, max_value = 100, step = 10, value = 100)
 
@@ -72,13 +75,19 @@ with st.expander('3\) Cooking Pattern'):
 	df_dail_cook = df_region.iloc[:3,4:]
 	st.dataframe(df_dail_cook)
 
+# Convert the DataFrame to an HTML table without the index column
+#table = df_dail_cook.to_html(index=False)
+
+# Display the HTML table in Streamlit
+#st.write(table, unsafe_allow_html=True)
+
 # Results - Cooking Techno-economic analysis
 
 with st.expander('4\) Results  \- Cookstove Characteristics'):
 	#baseline stove charactersitics
 	df_base_cf4 = df_base_cf2.loc[(df_base_cf2['Stove'] == prst_select)]
 	bs_life = df_base_cf4['Life'].values[0]
-	bs_eff = (df_base_cf4['Thermal Efficiency'].values[0])*100
+	bs_eff = (df_base_cf4['Thermal Efficiency'].values[0]) *100
 	bs_capex = df_base_cf4['Capex'].values[0]
 	bs_opex = df_base_cf4['Overheads (Stove)'].values[0]
 	bs_tcost = bs_capex + bs_opex
@@ -87,7 +96,7 @@ with st.expander('4\) Results  \- Cookstove Characteristics'):
 	df_el_cf4 = df_elec_cf2.loc[(df_elec_cf2['Stove'] == est_sel) & (df_elec_cf2['Fuel'] == epf_select)]
 	#df_el_cf4 = df_elec_cf2.loc[df_elec_cf2['Stove'] == est_sel]
 	el_life = df_el_cf4['Life'].values[0]
-	el_eff = (df_el_cf4['Thermal Efficiency'].values[0])*100
+	el_eff = (df_el_cf4['Thermal Efficiency'].values[0]) *100
 	el_capex = df_el_cf4['Capex'].values[0]
 	el_opex = df_el_cf4['Overheads (Stove)'].values[0]
 	el_tcost = el_capex + el_opex
@@ -125,20 +134,23 @@ with st.expander('5\) Results  \- Energy Demand & Cost'):
 	'Delta':[(el_dcd - bs_dcd),(el_hc - bs_hc),(el_dc - bs_dc),(el_ac - bs_ac)]
 	}
 	df_encons_var = pd.DataFrame(encons_var)
-	#st.dataframe(df_encons_var)
+	st.dataframe(df_encons_var)
 
 # with st.expander('6\) Results  \- Energy Cost'):
 	#baseline - energy cost
-	bs_uc = df_base_cf4['Unit cost'].values[0]
-	bs_opc = df_base_cf4['Opex'].values[0]
-	bs_ovc = df_base_cf4['Overheads (Fuel)'].values[0]
-	bs_etc = bs_opc + bs_ovc
+	bs_uc = df_base_cf4['Unit cost'].values[0] #unit cost
+	bs_opc = df_base_cf4['Opex'].values[0] #opex
+	bs_ovc = df_base_cf4['Overheads (Fuel)'].values[0] #overheads
+	bs_etc = bs_opc + bs_ovc #total cost
 
 	#electric cost
-	el_uc = df_el_cf4['Unit cost'].values[0]
-	el_opc = df_el_cf4['Opex'].values[0]
-	el_ovc = df_el_cf4['Overheads (Fuel)'].values[0]
-	el_etc = el_opc + el_ovc
+	el_price2 = el_price[['State',soc_eco_select]] #filtering dataframe
+	el_price3 = el_price2.loc[el_price2['State'] == state_select,soc_eco_select] #unit cost
+	el_uc = el_price3.item()
+	#el_uc = df_el_cf4['Unit cost'].values[0]
+	el_opc = df_el_cf4['Opex'].values[0] #opex
+	el_ovc = df_el_cf4['Overheads (Fuel)'].values[0] #overheads
+	el_etc = el_opc + el_ovc #total cost
 
 	#dataframe - energy cost
 	encost_var  = {'Variable':['Unit cost', 'Opex', 'Overheads', 'Total cost'],
@@ -149,7 +161,9 @@ with st.expander('5\) Results  \- Energy Demand & Cost'):
 	}
 	df_encost_var = pd.DataFrame(encost_var)
 	df_tcost = pd.concat([df_encons_var,df_encost_var], ignore_index=True)
-	#st.dataframe(df_encost_var)
+	df_tcost = df_tcost.astype(str)
+	#df_tcost = df_tcost.applymap(lambda x: "{:.2f}".format(x))
+	#st.write(df_tcost)
 	st.dataframe(df_tcost)
 
 with st.expander('6\) Results  \- Health Impacts'):
@@ -204,7 +218,7 @@ with st.expander('7\) Results  \- Financing'):
 	st.dataframe(df_fin_var)
 	st.markdown('FS - Fuel Switch, EI - Efficiency Improvement')
 
-
+st.markdown('<mark>*This is a draft version. Values mentioned are based on research papers and empirical evidence.*</mark>', unsafe_allow_html=True)
 
 # 1 - create a data frame with the variables
 # 2 - append the units to the data frame
