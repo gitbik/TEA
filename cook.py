@@ -3,7 +3,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from decimal import *
-#import openpyxl
+import openpyxl
 
 def decimal_from_value(value):
     return Decimal(value)
