@@ -284,8 +284,7 @@ with st.expander('6\) Results  \- Health Impacts'):
 		else:
 			return ['' for v in s]
 		
-	df_hlt_var_col = df_hlt_var.style.apply(hlight_health, axis=1).set_precision(2)
-
+	df_hlt_var_col = df_hlt_var.style.apply(hlight_health, axis=1)
 	st.dataframe(df_hlt_var_col)
 
 ### END - Color Section
