@@ -248,7 +248,7 @@ with st.expander('5\) Results  \- Energy Demand & Cost'):
 	df_encost_var_test = pd.DataFrame(encost_var_test)
 	df_tcost_test = pd.concat([df_encons_var,df_encost_var_test], ignore_index=True)
 	# Apply the function to the DataFrame
-	df_tcost_test = df_tcost_test.set_precision(2)
+	df_tcost_test = df_tcost_test.round(2)
 	df_tcost_test = df_tcost_test.style.apply(highlight_greater, axis=1)	
 	st.dataframe(df_tcost_test)
 
