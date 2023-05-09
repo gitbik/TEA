@@ -68,7 +68,8 @@ df_region = pd.read_excel("region-cooking.xlsx")
 
 df_base_cf4 = df_base_cf2.loc[(df_base_cf2['Stove'] == prst_select)]
 if hh_size < 3:
-	bs_dcd = ((df_base_cf4['Daily cooking duration'].values[0].round(2))* 0.75) * (prst_stack_percent * 0.01)
+	bs_dcd = ((df_base_cf4['Daily cooking duration'].values[0].
+		   (2))* 0.75) * (prst_stack_percent * 0.01)
 elif hh_size <= 6:
 	bs_dcd = df_base_cf4['Daily cooking duration'].values[0].round(2) * (prst_stack_percent * 0.01)
 else:
@@ -248,7 +249,7 @@ with st.expander('5\) Results  \- Energy Demand & Cost'):
 	df_encost_var_test = pd.DataFrame(encost_var_test)
 	df_tcost_test = pd.concat([df_encons_var,df_encost_var_test], ignore_index=True)
 	# Apply the function to the DataFrame
-	df_tcost_test = df_tcost_test.round(2)
+	df_tcost_test = df_tcost_test.set_option('display.precision', 2)
 	df_tcost_test = df_tcost_test.style.apply(highlight_greater, axis=1)	
 	st.dataframe(df_tcost_test)
 
