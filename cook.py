@@ -152,7 +152,7 @@ with st.expander('4\) Results  \- Cookstove Characteristics'):
 		else:
 			return ['' for v in s]
 
-	df_cst_var_col = df_cst_var.style.apply(highlight_rows, axis=1).set_precision(2)
+	df_cst_var_col = df_cst_var.style.apply(highlight_rows, axis=1)
 
 	st.dataframe(df_cst_var_col)
 
