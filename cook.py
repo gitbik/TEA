@@ -352,12 +352,12 @@ with st.expander('7\) Results  \- Financing'):
 				return ['background-color: lightgreen' if s['e-Cooking'] > 0 else '' for v in s]
 			else:
 				return ['' for v in s]
-		df = df.style.apply(hlight_fin, axis=1).set_precision(2)
+		df = df.style.apply(hlight_fin, axis=1)
 		return df
 
 	df_fin_var_col = highlight_rows(df_fin_var)
 	
-	# df_fin_var_col = df_fin_var.style.apply(highlight_fin, axis=1).set_precision(2)
+	# df_fin_var_col = df_fin_var.style.apply(highlight_fin, axis=1)
 
 	st.dataframe(df_fin_var_col)
 
