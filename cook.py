@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
 from pandas import DataFrame, Series 
 from functools import total_ordering
