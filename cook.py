@@ -143,7 +143,6 @@ with st.expander('4\) Results  \- Cookstove Characteristics'):
 	
 	### START - color dataframe
 
-
 	def highlight_rows(s):
 		if s.name in [1,2]:
 			return ['background-color: lightgreen' if s['Baseline'] < s['e-Cooking'] else '' for v in s]
@@ -301,6 +300,7 @@ with st.expander('7\) Results  \- Social & Environmental Aspects'):
 	}
 	df_encost_var_v3 = pd.DataFrame(encost_var_v3)
 	df_tcost_v3 = pd.concat([df_encons_var_v3,df_encost_var_v3], ignore_index=True)
+	df_tcost_v3 = df_tcost_v3.style.apply(highlight_greater, axis=1).format(precision=2)	
 	st.dataframe(df_tcost_v3)
 
 
