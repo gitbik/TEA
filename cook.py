@@ -8,6 +8,8 @@ from decimal import *
 import openpyxl
 
 
+st.set_page_config(page_title='Stove Energy Tool', page_icon = '🍜')
+
 def decimal_from_value(value):
     return Decimal(value)
 
